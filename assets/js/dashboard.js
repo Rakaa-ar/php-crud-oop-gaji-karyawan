@@ -10,11 +10,11 @@ new Chart(grafik, {
             label: 'Gaji Pokok',
             data: gajiKaryawan,
 
-            backgroundColor: '#5b84c4',
-            borderColor: '#4a70aa',
+            backgroundColor: '#3765b0',
+            borderColor: '#4069a8',
             borderWidth: 1,
 
-            hoverBackgroundColor: '#4a69a1'
+            hoverBackgroundColor: '#315baa'
         }]
     },
 

@@ -16,6 +16,16 @@ class Karyawan
     return mysqli_query($this->koneksi, $query);
   }
 
+  public function search($keyword)
+  {
+    $query = "SELECT * FROM karyawan 
+              WHERE nama LIKE '%$keyword%'
+              OR jabatan LIKE '%$keyword%'
+              ORDER BY id DESC";
+
+    return mysqli_query($this->koneksi, $query);          
+  }
+
   public function getById($id)
   {
     $query = "SELECT * FROM karyawan WHERE id = '$id'";
@@ -75,5 +85,4 @@ class Karyawan
 
     return mysqli_query($this->koneksi, $query);
   }
-
 }

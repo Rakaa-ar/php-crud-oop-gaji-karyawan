@@ -8,7 +8,13 @@ $koneksi = $db->connect();
 
 $karyawan = new Karyawan($koneksi);
 
-$dataKaryawan = $karyawan->getAll();
+$keyword = $_GET['keyword'] ?? '';
+
+if ($keyword != '') {
+    $dataKaryawan = $karyawan->search($keyword);
+} else {
+    $dataKaryawan = $karyawan->getAll();
+}
 
 include 'layout/header.php';
 
@@ -54,6 +60,19 @@ include 'layout/header.php';
   <?php endif; ?>
 
 <?php endif; ?>
+<form method="GET" class="mb-3">
+  <div class="input-group">
+    <input
+      type="text"
+      name="keyword"
+      class="form-control"
+      placeholder="Cari Nama atau Jabatan...">
+    <button type="submit" class="btn btn-light">
+      <i class="bi bi-search"></i>
+      Cari
+    </button>
+  </div>
+</form>
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Data Karyawan</h1>
