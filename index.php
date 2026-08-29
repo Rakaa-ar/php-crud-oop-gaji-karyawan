@@ -10,10 +10,24 @@ $karyawan = new Karyawan($koneksi);
 
 $keyword = $_GET['keyword'] ?? '';
 
+$limit = 5;
+
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+
+$offset = ($page - 1) * $limit;
+
+$resultCount = $karyawan->countKaryawan();
+
+$dataCount = mysqli_fetch_assoc($resultCount);
+
+$totalKaryawan = $dataCount['total'];
+
+$totalPages = ceil($totalKaryawan / $limit);
+
 if ($keyword != '') {
-    $dataKaryawan = $karyawan->search($keyword);
+  $dataKaryawan = $karyawan->search($keyword);
 } else {
-    $dataKaryawan = $karyawan->getAll();
+  $dataKaryawan = $karyawan->getPagination($limit, $offset);
 }
 
 include 'layout/header.php';
@@ -164,6 +178,21 @@ include 'layout/header.php';
         </tbody>
 
       </table>
+      <nav class="mt-3">
+        <ul class="pagination justify-content-center">
+
+          <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+
+            <li class="page-item <?= ($page == $i) ? 'active' : ''; ?>">
+              <a class="page-link" href="?page=<?= $i; ?>">
+                <?= $i; ?>
+              </a>
+            </li>
+
+          <?php endfor; ?>
+
+        </ul>
+      </nav>
 
     </div>
 

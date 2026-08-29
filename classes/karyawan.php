@@ -16,6 +16,15 @@ class Karyawan
     return mysqli_query($this->koneksi, $query);
   }
 
+  public function getPagination($limit, $offset)
+  {
+    $query = "SELECT * FROM karyawan 
+              ORDER BY id DESC
+              LIMIT $limit OFFSET $offset";
+
+    return mysqli_query($this->koneksi, $query);
+  }
+
   public function search($keyword)
   {
     $query = "SELECT * FROM karyawan 
@@ -23,7 +32,7 @@ class Karyawan
               OR jabatan LIKE '%$keyword%'
               ORDER BY id DESC";
 
-    return mysqli_query($this->koneksi, $query);          
+    return mysqli_query($this->koneksi, $query);
   }
 
   public function getById($id)
@@ -81,7 +90,7 @@ class Karyawan
   }
   public function getDataGrafik()
   {
-    $query= "SELECT nama, gaji_pokok FROM karyawan";
+    $query = "SELECT nama, gaji_pokok FROM karyawan";
 
     return mysqli_query($this->koneksi, $query);
   }
