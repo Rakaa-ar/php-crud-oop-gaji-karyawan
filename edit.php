@@ -21,17 +21,39 @@ if (isset($_POST['update'])) {
   $tunjangan = $_POST['tunjangan'];
   $potongan = $_POST['potongan'];
 
-  $karyawan->update(
-    $id,
-    $nama,
-    $jabatan,
-    $gajiPokok,
-    $tunjangan,
-    $potongan
-  );
+  $error = [];
+  if ($nama == '') {
+    $error[] = 'Nama wajib diisi.';
+  }
 
-  header('Location: index.php?success=update');
-  exit;
+  if ($jabatan == '') {
+    $error[] = 'Jabatan wajib diisi.';
+  }
+
+  if ($gajiPokok < 0) {
+    $error[] = 'Gaji pokok tidak boleh negatif.';
+  }
+
+  if ($tunjangan < 0) {
+    $error[] = 'Tunjangan tidak boleh negatif.';
+  }
+
+  if ($potongan < 0) {
+    $error[] = 'Potongan tidak boleh negatif.';
+  }
+
+  if (empty($error)) {
+    $karyawan->update(
+      $id,
+      $nama,
+      $jabatan,
+      $gajiPokok,
+      $tunjangan,
+      $potongan
+    );
+    header('Location: index.php?success=update');
+    exit;
+  }
 }
 include 'layout/header.php';
 ?>
@@ -61,8 +83,8 @@ include 'layout/header.php';
             type="text"
             name="nama"
             class="form-control"
-            value="<?= htmlspecialchars($row['nama']); ?>"
-            required>
+            value="<?= htmlspecialchars($row['nama']); ?>">
+
         </div>
 
         <div class="mb-3">
@@ -75,8 +97,8 @@ include 'layout/header.php';
             type="text"
             name="jabatan"
             class="form-control"
-            value="<?= htmlspecialchars($row['jabatan']); ?>"
-            required>
+            value="<?= htmlspecialchars($row['jabatan']); ?>">
+
         </div>
 
         <div class="mb-3">
@@ -89,8 +111,7 @@ include 'layout/header.php';
             type="number"
             name="gaji_pokok"
             class="form-control"
-            value="<?= $row['gaji_pokok']; ?>"
-            required>
+            value="<?= $row['gaji_pokok']; ?>">
         </div>
 
         <div class="mb-3">
@@ -103,8 +124,7 @@ include 'layout/header.php';
             type="number"
             name="tunjangan"
             class="form-control"
-            value="<?= $row['tunjangan']; ?>"
-            required>
+            value="<?= $row['tunjangan']; ?>">
         </div>
 
         <div class="mb-4">
@@ -117,8 +137,8 @@ include 'layout/header.php';
             type="number"
             name="potongan"
             class="form-control"
-            value="<?= $row['potongan']; ?>"
-            required>
+            value="<?= $row['potongan']; ?>">
+
         </div>
 
         <div class="d-flex gap-2">
@@ -139,6 +159,17 @@ include 'layout/header.php';
           </a>
 
         </div>
+        <?php if (!empty($error)): ?>
+
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <?php foreach ($error as $pesan): ?>
+                <li><?= $pesan; ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+
+        <?php endif; ?>
 
       </form>
 
@@ -149,4 +180,3 @@ include 'layout/header.php';
 </div>
 
 <?php include 'layout/footer.php'; ?>
-
