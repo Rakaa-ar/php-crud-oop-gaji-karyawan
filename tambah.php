@@ -97,11 +97,11 @@ include 'layout/header.php';
             <i class="bi bi-cash-stack me-1"></i>
             Gaji Pokok
           </label>
-
           <input
-            type="number"
+            type="text"
             name="gaji_pokok"
             class="form-control"
+            id="gajipokok"
             placeholder="Masukkan gaji pokok">
         </div>
 
@@ -110,11 +110,11 @@ include 'layout/header.php';
             <i class="bi bi-plus-circle me-1"></i>
             Tunjangan
           </label>
-
           <input
-            type="number"
+            type="text"
             name="tunjangan"
             class="form-control"
+            id="tunjangan"
             placeholder="Masukkan tunjangan">
         </div>
 
@@ -123,12 +123,24 @@ include 'layout/header.php';
             <i class="bi bi-dash-circle me-1"></i>
             Potongan
           </label>
-
           <input
-            type="number"
+            type="text"
             name="potongan"
             class="form-control"
+            id="potongan"
             placeholder="Masukkan potongan">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            <i class="bi bi-cash-stack me-1"></i>
+            Gaji Bersih
+          </label>
+          <input
+            type="text"
+            id="gajiBersih"
+            class="form-control"
+            readonly>
         </div>
 
         <div class="d-flex gap-2">
@@ -162,6 +174,66 @@ include 'layout/header.php';
         <?php endif; ?>
 
       </form>
+      <script>
+        const gajiPokok = document.getElementById('gajipokok');
+        const tunjangan = document.getElementById('tunjangan');
+        const potongan = document.getElementById('potongan');
+        const gajiBersih = document.getElementById('gajiBersih');
+
+        function hitungGaji() {
+          const pokok = Number(gajiPokok.value.replace(/\D/g, '')) || 0;
+          const tunj = Number(tunjangan.value.replace(/\D/g, '')) || 0;
+          const pot = Number(potongan.value.replace(/\D/g, '')) || 0;
+
+          const hasil = pokok + tunj - pot;
+
+          gajiBersih.value = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0
+          }).format(hasil);
+        }
+
+        gajiPokok.addEventListener('input', hitungGaji);
+        tunjangan.addEventListener('input', hitungGaji);
+        potongan.addEventListener('input', hitungGaji);
+
+        function formatRupiah(input) {
+          let angka = input.value.replace(/\D/g, '');
+
+          if (angka === '') {
+            input.value = '';
+            return;
+          }
+
+          input.value = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0
+          }).format(Number(angka));
+        }
+
+        gajiPokok.addEventListener('input', function() {
+          formatRupiah(gajiPokok);
+          hitungGaji();
+        });
+
+        tunjangan.addEventListener('input', function() {
+          formatRupiah(tunjangan);
+          hitungGaji();
+        });
+
+        potongan.addEventListener('input', function() {
+          formatRupiah(potongan);
+          hitungGaji();
+        });
+
+        document.querySelector('form').addEventListener('submit', function() {
+          gajiPokok.value = gajiPokok.value.replace(/\D/g, '');
+          tunjangan.value = tunjangan.value.replace(/\D/g, '');
+          potongan.value = potongan.value.replace(/\D/g, '');
+        });
+      </script>
 
     </div>
   </div>
