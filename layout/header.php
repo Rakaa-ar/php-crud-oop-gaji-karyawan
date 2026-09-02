@@ -41,6 +41,10 @@
                     Tambah
                 </a>
 
+                <a href="logout.php" class="nav-link px-3 py-2 rounded">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+                </a>
             </div>
 
         </div>

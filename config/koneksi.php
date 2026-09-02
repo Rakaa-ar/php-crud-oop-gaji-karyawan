@@ -1,6 +1,6 @@
 <?php
-    
-    class Database
+
+class Database
 {
     private $host = "localhost";
     private $username = "root";
@@ -9,8 +9,13 @@
 
     public function connect()
     {
-        // koneksi
+        $koneksi = mysqli_connect(
+            $this->host,
+            $this->username,
+            $this->password,
+            $this->database
+        );
+
+        return $koneksi;
     }
 }
-
-?>
