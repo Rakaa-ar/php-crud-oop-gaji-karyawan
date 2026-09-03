@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id'])) {
   header('Location: login.php');
   exit;
 }
-
 include "classes/database.php";
 include "classes/karyawan.php";
 
@@ -98,9 +97,12 @@ include 'layout/header.php';
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Data Karyawan</h1>
 
-    <a href="tambah.php" class=" btn btn-success shadow-ms">
-      TAMBAH KARYAWAN
-    </a>
+    <?php if ($_SESSION['role'] == 'admin'): ?>
+      <a href="tambah.php" class=" btn btn-success shadow-ms">
+        TAMBAH KARYAWAN
+      </a>
+    <?php endif ?>
+
   </div>
 </div>
 
@@ -113,7 +115,6 @@ include 'layout/header.php';
       <table class="table table-bordered table-striped table-hover align-middle">
 
         <thead class="table-header-custom">
-
           <tr>
             <th>No</th>
             <th>Nama</th>
@@ -124,7 +125,6 @@ include 'layout/header.php';
             <th>Gaji Bersih</th>
             <th>Aksi</th>
           </tr>
-
         </thead>
 
         <tbody>
@@ -139,44 +139,62 @@ include 'layout/header.php';
 
               <td><?= $no++; ?></td>
 
-              <td><?= htmlspecialchars($row['nama']); ?></td>
-
-              <td><?= htmlspecialchars($row['jabatan']); ?></td>
-
-              <td>Rp <?= number_format($row['gaji_pokok'], 0, ',', '.'); ?></td>
-
-              <td>Rp <?= number_format($row['tunjangan'], 0, ',', '.'); ?></td>
-
-              <td>Rp <?= number_format($row['potongan'], 0, ',', '.'); ?></td>
-
               <td>
-                Rp
-                <?= number_format(
-                  $row['gaji_pokok'] + $row['tunjangan'] - $row['potongan'],
-                  0,
-                  ',',
-                  '.'
-                ); ?>
+                <?= htmlspecialchars($row['nama']); ?>
               </td>
 
               <td>
-
-                <a
-                  href="edit.php?id=<?= $row['id']; ?>"
-                  class="btn btn-secondary btn-sm">
-                  <i class="bi bi-pencil-square"></i>
-                  Edit
-                </a>
-
-                <a
-                  href="hapus.php?id=<?= $row['id']; ?>"
-                  class="btn btn-danger btn-sm"
-                  onclick="return confirm('Yakin ingin menghapus data ini?');">
-                  <i class="bi bi-trash3-fill"></i>
-                  Hapus
-                </a>
-
+                <?= htmlspecialchars($row['jabatan']); ?>
               </td>
+
+              <?php if ($_SESSION['role'] == 'admin'): ?>
+
+                <td>
+                  Rp <?= number_format($row['gaji_pokok'], 0, ',', '.'); ?>
+                </td>
+
+                <td>
+                  Rp <?= number_format($row['tunjangan'], 0, ',', '.'); ?>
+                </td>
+
+                <td>
+                  Rp <?= number_format($row['potongan'], 0, ',', '.'); ?>
+                </td>
+
+                <td>
+                  Rp <?= number_format(
+                        $row['gaji_pokok'] + $row['tunjangan'] - $row['potongan'],0, ',', '.'); ?>
+                </td>
+
+                <td>
+                  <?php if ($_SESSION['role'] === 'admin'): ?>
+                  <a
+                    href="edit.php?id=<?= $row['id']; ?>"
+                    class="btn btn-secondary btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                    Edit
+                  </a>
+
+                  <a
+                    href="hapus.php?id=<?= $row['id']; ?>"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('Yakin ingin menghapus data ini?');">
+                    <i class="bi bi-trash3-fill"></i>
+                    Hapus
+                  </a>
+                  <?php endif ?>
+                </td>
+
+              <?php else: ?>
+
+                <td>XXXXXXXX</td>
+                <td>XXXXXXXX</td>
+                <td>XXXXXXXX</td>
+                <td>XXXXXXXX</td>
+
+                <td>-</td>
+
+              <?php endif; ?>
 
             </tr>
 

@@ -35,11 +35,13 @@
                     <i class="bi bi-bar-chart-line-fill me-1"></i>
                     Dashboard
                 </a>
-
-                <a href="tambah.php" class="nav-link px-3 py-2 rounded">
-                    <i class="bi bi-person-plus-fill me-1"></i>
-                    Tambah
-                </a>
+                
+                <?php if ($_SESSION['role'] === 'admin'): ?>
+                    <a href="tambah.php" class="nav-link px-3 py-2 rounded">
+                        <i class="bi bi-person-plus-fill me-1"></i>
+                        Tambah
+                    </a>
+                <?php endif; ?>
 
                 <a href="logout.php" class="nav-link px-3 py-2 rounded">
                     <i class="bi bi-box-arrow-right"></i>
