@@ -163,25 +163,34 @@ include 'layout/header.php';
 
                 <td>
                   Rp <?= number_format(
-                        $row['gaji_pokok'] + $row['tunjangan'] - $row['potongan'],0, ',', '.'); ?>
+                        $row['gaji_pokok'] + $row['tunjangan'] - $row['potongan'],
+                        0,
+                        ',',
+                        '.'
+                      ); ?>
                 </td>
 
                 <td>
                   <?php if ($_SESSION['role'] === 'admin'): ?>
-                  <a
-                    href="edit.php?id=<?= $row['id']; ?>"
-                    class="btn btn-secondary btn-sm">
-                    <i class="bi bi-pencil-square"></i>
-                    Edit
-                  </a>
 
-                  <a
-                    href="hapus.php?id=<?= $row['id']; ?>"
-                    class="btn btn-danger btn-sm"
-                    onclick="return confirm('Yakin ingin menghapus data ini?');">
-                    <i class="bi bi-trash3-fill"></i>
-                    Hapus
-                  </a>
+                    <a href="riwayat.php?id=<?= $row['id']; ?>" class="btn btn-info btn-sm">
+                      <i class="bi bi-clock-history"></i>
+                      Riwayat
+                    </a>
+                    <a
+                      href="edit.php?id=<?= $row['id']; ?>"
+                      class="btn btn-secondary btn-sm">
+                      <i class="bi bi-pencil-square"></i>
+                      Edit
+                    </a>
+
+                    <a
+                      href="hapus.php?id=<?= $row['id']; ?>"
+                      class="btn btn-danger btn-sm"
+                      onclick="return confirm('Yakin ingin menghapus data ini?');">
+                      <i class="bi bi-trash3-fill"></i>
+                      Hapus
+                    </a>
                   <?php endif ?>
                 </td>
 

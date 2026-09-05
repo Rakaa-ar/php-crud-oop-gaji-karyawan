@@ -13,38 +13,50 @@ if ($_SESSION['role'] !== 'admin') {
 }
 
 include 'classes/database.php';
+include 'classes/riwayat_gaji.php';
 include 'classes/karyawan.php';
 
 $db = new Database();
 $koneksi = $db->connect();
 
+$riwayatGaji = new RiwayatGaji($koneksi);
 $karyawan = new Karyawan($koneksi);
 
-$id = $_GET['id'];
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-$data = $karyawan->getById($id);
-$row = mysqli_fetch_assoc($data);
+if ($id <= 0) {
+  header('Location: index.php');
+  exit;
+}
 
-if (isset($_POST['update'])) {
+$dataKaryawan = mysqli_fetch_assoc($karyawan->getById($id));
 
-  $nama = $_POST['nama'];
-  $jabatan = $_POST['jabatan'];
+if (!$dataKaryawan) {
+  header('Location: index.php');
+  exit;
+}
 
-  $gajiPokok = preg_replace('/\D/', '', $_POST['gaji_pokok']);
-  $tunjangan = preg_replace('/\D/', '', $_POST['tunjangan']);
-  $potongan = preg_replace('/\D/', '', $_POST['potongan']);
+$error = [];
 
+if (isset($_POST['simpan'])) {
+
+  $periode = $_POST['periode'];
+  $gajiPokok = $_POST['gaji_pokok'];
+  $tunjangan = $_POST['tunjangan'];
+  $potongan = $_POST['potongan'];
+
+  // Bersihkan format Rupiah
+  $gajiPokok = preg_replace('/\D/', '', $gajiPokok);
+  $tunjangan = preg_replace('/\D/', '', $tunjangan);
+  $potongan = preg_replace('/\D/', '', $potongan);
+
+  // Kalau kosong, anggap 0
   $gajiPokok = $gajiPokok === '' ? 0 : (float) $gajiPokok;
   $tunjangan = $tunjangan === '' ? 0 : (float) $tunjangan;
   $potongan = $potongan === '' ? 0 : (float) $potongan;
 
-  $error = [];
-  if ($nama == '') {
-    $error[] = 'Nama wajib diisi.';
-  }
-
-  if ($jabatan == '') {
-    $error[] = 'Jabatan wajib diisi.';
+  if ($periode == '') {
+    $error[] = 'Periode wajib diisi.';
   }
 
   if ($gajiPokok < 0) {
@@ -60,18 +72,20 @@ if (isset($_POST['update'])) {
   }
 
   if (empty($error)) {
-    $karyawan->update(
+
+    $riwayatGaji->create(
       $id,
-      $nama,
-      $jabatan,
+      $periode,
       $gajiPokok,
       $tunjangan,
       $potongan
     );
-    header('Location: index.php?success=update');
+
+    header("Location: riwayat.php?id=$id");
     exit;
   }
 }
+
 include 'layout/header.php';
 ?>
 
@@ -81,43 +95,40 @@ include 'layout/header.php';
 
     <div class="card-header text-white">
       <h4 class="mb-0">
-        <i class="bi bi-pencil-square me-2"></i>
-        Edit Karyawan
+        <i class="bi bi-clock-history me-2"></i>
+        Tambah Riwayat Gaji
       </h4>
     </div>
 
     <div class="card-body p-4">
 
+      <div class="mb-4">
+        <h5>
+          <?= htmlspecialchars($dataKaryawan['nama']); ?>
+        </h5>
+
+        <p class="text-muted mb-0">
+          <?= htmlspecialchars($dataKaryawan['jabatan']); ?>
+        </p>
+      </div>
+
       <form method="POST">
 
+        <!-- PERIODE -->
         <div class="mb-3">
           <label class="form-label">
-            <i class="bi bi-person me-1"></i>
-            Nama
+            <i class="bi bi-calendar3 me-1"></i>
+            Periode
           </label>
 
           <input
-            type="text"
-            name="nama"
+            type="date"
+            name="periode"
             class="form-control"
-            value="<?= htmlspecialchars($row['nama']); ?>">
-
+            required>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">
-            <i class="bi bi-briefcase me-1"></i>
-            Jabatan
-          </label>
-
-          <input
-            type="text"
-            name="jabatan"
-            class="form-control"
-            value="<?= htmlspecialchars($row['jabatan']); ?>">
-
-        </div>
-
+        <!-- GAJI POKOK -->
         <div class="mb-3">
           <label class="form-label">
             <i class="bi bi-cash-stack me-1"></i>
@@ -129,10 +140,11 @@ include 'layout/header.php';
             name="gaji_pokok"
             id="gajiPokok"
             class="form-control"
-            value="Rp <?= number_format($row['gaji_pokok'], 0, ',', '.'); ?>"
+            placeholder="Rp 0"
             required>
         </div>
 
+        <!-- TUNJANGAN -->
         <div class="mb-3">
           <label class="form-label">
             <i class="bi bi-plus-circle me-1"></i>
@@ -144,11 +156,12 @@ include 'layout/header.php';
             name="tunjangan"
             id="tunjangan"
             class="form-control"
-            value="Rp <?= number_format($row['tunjangan'], 0, ',', '.'); ?>"
+            placeholder="Rp 0"
             required>
         </div>
 
-        <div class="mb-4">
+        <!-- POTONGAN -->
+        <div class="mb-3">
           <label class="form-label">
             <i class="bi bi-dash-circle me-1"></i>
             Potongan
@@ -159,52 +172,83 @@ include 'layout/header.php';
             name="potongan"
             id="potongan"
             class="form-control"
-            value="Rp <?= number_format($row['potongan'], 0, ',', '.'); ?>"
+            placeholder="Rp 0"
             required>
-
         </div>
 
-        <div class="d-flex gap-2">
+        <!-- GAJI BERSIH -->
+        <div class="mb-4">
+          <label class="form-label">
+            <i class="bi bi-wallet2 me-1"></i>
+            Gaji Bersih
+          </label>
 
-          <button
-            type="submit"
-            name="update"
-            class="btn btn-warning">
-            <i class="bi bi-save me-1"></i>
-            Update
-          </button>
-
-          <a
-            href="index.php"
-            class="btn btn-danger">
-            <i class="bi bi-arrow-left me-1"></i>
-            Kembali
-          </a>
-
+          <input
+            type="text"
+            id="gajiBersih"
+            class="form-control"
+            placeholder="Rp 0"
+            readonly>
         </div>
+
         <?php if (!empty($error)): ?>
 
           <div class="alert alert-danger">
             <ul class="mb-0">
+
               <?php foreach ($error as $pesan): ?>
-                <li><?= $pesan; ?></li>
+                <li>
+                  <?= htmlspecialchars($pesan); ?>
+                </li>
               <?php endforeach; ?>
+
             </ul>
           </div>
 
         <?php endif; ?>
 
+        <div class="d-flex gap-2">
+
+          <button
+            type="submit"
+            name="simpan"
+            class="btn btn-success">
+
+            <i class="bi bi-save me-1"></i>
+            Simpan
+
+          </button>
+
+          <a
+            href="riwayat.php?id=<?= $id; ?>"
+            class="btn btn-danger">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Kembali
+
+          </a>
+
+        </div>
+
       </form>
+
       <script>
         const gajiPokok = document.getElementById('gajiPokok');
         const tunjangan = document.getElementById('tunjangan');
         const potongan = document.getElementById('potongan');
+        const gajiBersih = document.getElementById('gajiBersih');
+
+        function ambilAngka(value) {
+          return Number(value.replace(/\D/g, '')) || 0;
+        }
 
         function formatRupiah(input) {
+
           let angka = input.value.replace(/\D/g, '');
 
           if (angka === '') {
             input.value = '';
+            hitungGaji();
             return;
           }
 
@@ -213,16 +257,43 @@ include 'layout/header.php';
             currency: 'IDR',
             maximumFractionDigits: 0
           }).format(Number(angka));
+
+          hitungGaji();
         }
 
-        gajiPokok.addEventListener('input', () => formatRupiah(gajiPokok));
-        tunjangan.addEventListener('input', () => formatRupiah(tunjangan));
-        potongan.addEventListener('input', () => formatRupiah(potongan));
+        function hitungGaji() {
+
+          const pokok = ambilAngka(gajiPokok.value);
+          const tunj = ambilAngka(tunjangan.value);
+          const pot = ambilAngka(potongan.value);
+
+          const hasil = pokok + tunj - pot;
+
+          gajiBersih.value = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0
+          }).format(hasil);
+        }
+
+        gajiPokok.addEventListener('input', function() {
+          formatRupiah(gajiPokok);
+        });
+
+        tunjangan.addEventListener('input', function() {
+          formatRupiah(tunjangan);
+        });
+
+        potongan.addEventListener('input', function() {
+          formatRupiah(potongan);
+        });
 
         document.querySelector('form').addEventListener('submit', function() {
+
           gajiPokok.value = gajiPokok.value.replace(/\D/g, '');
           tunjangan.value = tunjangan.value.replace(/\D/g, '');
           potongan.value = potongan.value.replace(/\D/g, '');
+
         });
       </script>
 
