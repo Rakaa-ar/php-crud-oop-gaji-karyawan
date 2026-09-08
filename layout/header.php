@@ -23,7 +23,7 @@
 
             <a href="index.php" class="navbar-brand">
                 Gaji Karyawan
-            </a>
+            </a>  
 
             <div class="ms-auto d-flex gap-2">
                 <a href="index.php" class="nav-link px-3 py-2 rounded">
@@ -31,11 +31,16 @@
                     Home
                 </a>
 
+                <a href="semua_riwayat.php" class="nav-link px-3 py-2 rounded">
+                    <i class="bi bi-clock-history me-1"></i>
+                    Riwayat Gaji
+                </a>
+
                 <a href="dashboard.php" class="nav-link px-3 py-2 rounded">
                     <i class="bi bi-bar-chart-line-fill me-1"></i>
                     Dashboard
                 </a>
-                
+
                 <?php if ($_SESSION['role'] === 'admin'): ?>
                     <a href="tambah.php" class="nav-link px-3 py-2 rounded">
                         <i class="bi bi-person-plus-fill me-1"></i>

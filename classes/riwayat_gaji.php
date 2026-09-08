@@ -62,4 +62,72 @@ class riwayatGaji
 
     return mysqli_stmt_execute($stmt);
   }
+
+  public function getAllWithKaryawan()
+  {
+    $query = "SELECT riwayat_gaji.*,karyawan.nama,karyawan.jabatan
+              FROM riwayat_gaji INNER JOIN karyawan ON riwayat_gaji.karyawan_id = karyawan.id
+              ORDER BY riwayat_gaji.periode DESC";
+
+    $stmt = mysqli_prepare($this->koneksi, $query);
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_stmt_get_result($stmt);
+  }
+
+  public function getByBulan($bulan)
+  {
+    $query = "SELECT
+                riwayat_gaji.*,
+                karyawan.nama,
+                karyawan.jabatan
+              FROM riwayat_gaji
+              INNER JOIN karyawan
+                ON riwayat_gaji.karyawan_id = karyawan.id
+              WHERE DATE_FORMAT(riwayat_gaji.periode, '%Y-%m') = ?
+              ORDER BY riwayat_gaji.periode DESC";
+
+    $stmt = mysqli_prepare($this->koneksi, $query);
+    mysqli_stmt_bind_param($stmt, "s", $bulan);
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_stmt_get_result($stmt);
+  }
+
+  public function getByRange($dari, $sampai)
+  {
+    $query = "SELECT
+                riwayat_gaji.*,
+                karyawan.nama,
+                karyawan.jabatan
+              FROM riwayat_gaji
+              INNER JOIN karyawan
+                ON riwayat_gaji.karyawan_id = karyawan.id
+              WHERE riwayat_gaji.periode BETWEEN ? AND ?
+              ORDER BY riwayat_gaji.periode DESC";
+
+    $stmt = mysqli_prepare($this->koneksi, $query);
+    mysqli_stmt_bind_param($stmt, "ss", $dari, $sampai);
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_stmt_get_result($stmt);
+  }
+
+  public function updateStatus($id, $status)
+  {
+    $query = "UPDATE riwayat_gaji
+              SET status = ?
+              WHERE id = ?";
+
+    $stmt = mysqli_prepare($this->koneksi, $query);
+
+    mysqli_stmt_bind_param(
+      $stmt,
+      "si",
+      $status,
+      $id
+    );
+
+    return mysqli_stmt_execute($stmt);
+  }
 }
