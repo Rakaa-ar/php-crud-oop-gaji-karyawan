@@ -148,6 +148,37 @@ class riwayatGaji
     return mysqli_stmt_get_result($stmt);
   }
 
+  public function getDetailPayrollByBulan($bulan)
+  {
+    $query = "SELECT
+                riwayat_gaji.id AS payroll_id,
+                riwayat_gaji.karyawan_id,
+                karyawan.nama,
+                karyawan.jabatan,
+                riwayat_gaji.periode,
+                riwayat_gaji.gaji_pokok,
+                riwayat_gaji.tunjangan,
+                riwayat_gaji.potongan,
+                (riwayat_gaji.gaji_pokok
+                + riwayat_gaji.tunjangan
+                - riwayat_gaji.potongan) AS gaji_bersih,
+                riwayat_gaji.status
+              FROM riwayat_gaji
+              INNER JOIN karyawan
+                ON riwayat_gaji.karyawan_id = karyawan.id
+              WHERE DATE_FORMAT(riwayat_gaji.periode, '%Y-%m') = ?
+              ORDER BY riwayat_gaji.periode DESC,
+                    riwayat_gaji.id DESC";
+
+    $stmt = mysqli_prepare($this->koneksi, $query);
+
+    mysqli_stmt_bind_param($stmt, "s", $bulan);
+
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_stmt_get_result($stmt);
+  }
+
   public function getDashboardPayroll($bulan)
   {
     $query = "SELECT

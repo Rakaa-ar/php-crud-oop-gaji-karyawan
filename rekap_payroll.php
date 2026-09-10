@@ -44,6 +44,24 @@ include 'layout/header.php';
         Tampilkan
       </button>
     </div>
+    <div>
+      <a
+        href="export_recap_excel.php?bulan=<?= urlencode($bulan); ?>"
+        class="btn btn-light">
+
+        <i class="bi bi-file-earmark-excel me-1"></i>
+        Export Excel
+      </a>
+
+      <a
+        href="export_detail_excel.php?bulan=<?= urlencode($bulan); ?>"
+        class="btn btn-light">
+
+        <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+        Detail Excel
+
+      </a>
+    </div>
 
   </div>
 

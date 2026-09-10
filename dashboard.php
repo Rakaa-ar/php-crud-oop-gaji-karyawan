@@ -46,7 +46,6 @@ $totalPending = $dataPayroll['pending'] ?? 0;
 $totalApproved = $dataPayroll['approved'] ?? 0;
 $totalPaid = $dataPayroll['paid'] ?? 0;
 
-
 include 'layout/header.php';
 ?>
 
@@ -205,6 +204,7 @@ include 'layout/header.php';
 
     const gajiKaryawan =
       <?= json_encode(array_column($dataGrafik, 'gaji_pokok')); ?>;
+
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
