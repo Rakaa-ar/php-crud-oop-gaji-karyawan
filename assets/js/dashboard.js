@@ -2,7 +2,6 @@ const grafik = document.getElementById('grafikGaji');
 
 new Chart(grafik, {
     type: 'bar',
-
     data: {
         labels: namaKaryawan,
 

@@ -48,6 +48,26 @@ if (!$data) {
 
 $karyawan_id = $data['karyawan_id'];
 
+/* Ambil status payroll */
+$queryStatus = "SELECT status FROM riwayat_gaji WHERE id = ?";
+$stmtStatus = mysqli_prepare($koneksi, $queryStatus);
+mysqli_stmt_bind_param($stmtStatus, "i", $id);
+mysqli_stmt_execute($stmtStatus);
+
+$resultStatus = mysqli_stmt_get_result($stmtStatus);
+$dataStatus = mysqli_fetch_assoc($resultStatus);
+
+if (!$dataStatus) {
+    header('Location: index.php');
+    exit;
+}
+
+/* Hanya Pending yang boleh dihapus */
+if ($dataStatus['status'] !== 'pending') {
+    header("Location: riwayat.php?id=$karyawan_id");
+    exit;
+}
+
 /*
  * Hapus riwayat
  */

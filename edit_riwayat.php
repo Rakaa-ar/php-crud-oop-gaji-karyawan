@@ -42,6 +42,11 @@ if (!$dataRiwayat) {
   exit;
 }
 
+if ($dataRiwayat['status'] !== 'pending') {
+  header('Location: riwayat.php?id=' . $dataRiwayat['karyawan_id']);
+  exit;
+}
+
 $dataKaryawan = mysqli_fetch_assoc(
   $karyawan->getById($dataRiwayat['karyawan_id'])
 );

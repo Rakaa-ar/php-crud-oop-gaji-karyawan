@@ -20,41 +20,85 @@
 
     <nav class="navbar navbar-custom">
         <div class="container">
-
             <a href="index.php" class="navbar-brand">
                 Gaji Karyawan
-            </a>  
+            </a>
+            <div class="ms-auto d-flex align-items-center gap-2">
 
-            <div class="ms-auto d-flex gap-2">
                 <a href="index.php" class="nav-link px-3 py-2 rounded">
-                    <i class="bi bi-house-door-fill me-1"></i>
+                    <i class="bi bi-house-fill me-1"></i>
                     Home
                 </a>
+                <div class="ms-auto dropdown">
+                    <button
+                        class="btn btn-skyblue"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
 
-                <a href="semua_riwayat.php" class="nav-link px-3 py-2 rounded">
-                    <i class="bi bi-clock-history me-1"></i>
-                    Riwayat Gaji
-                </a>
+                        <i class="bi bi-three-dots-vertical fs-4"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a href="proses_payroll.php" class="dropdown-item">
+                                <i class="bi bi-calculator me-2"></i>
+                                Proses PAYROLL
+                            </a>
+                        </li>
 
-                <a href="dashboard.php" class="nav-link px-3 py-2 rounded">
-                    <i class="bi bi-bar-chart-line-fill me-1"></i>
-                    Dashboard
-                </a>
+                        <li>
+                            <a href="rekap_payroll.php" class="dropdown-item">
+                                <i class="bi bi-bar-chart me-2"></i>
+                                Rekap PAYROLL
+                            </a>
+                        </li>
 
-                <?php if ($_SESSION['role'] === 'admin'): ?>
-                    <a href="tambah.php" class="nav-link px-3 py-2 rounded">
-                        <i class="bi bi-person-plus-fill me-1"></i>
-                        Tambah
-                    </a>
-                <?php endif; ?>
+                        <li>
+                            <a href="audit_log.php" class="dropdown-item">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Audit Log
+                            </a>
+                        </li>
 
-                <a href="logout.php" class="nav-link px-3 py-2 rounded">
-                    <i class="bi bi-box-arrow-right"></i>
-                    Logout
-                </a>
+                        <li>
+                            <a href="semua_riwayat.php" class="dropdown-item">
+                                <i class="bi bi-clock-history me-2"></i>
+                                Riwayat Gaji
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="dashboard.php" class="dropdown-item">
+                                <i class="bi bi-bar-chart-line-fill me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+
+                        <?php if ($_SESSION['role'] === 'admin'): ?>
+                            <li>
+                                <a href="tambah.php" class="dropdown-item">
+                                    <i class="bi bi-person-plus-fill me-2"></i>
+                                    Tambah
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a href="logout.php" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
             </div>
-
-        </div>
     </nav>
 </body>
 <div class="container mt-4">

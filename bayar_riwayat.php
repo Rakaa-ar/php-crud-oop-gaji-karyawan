@@ -14,11 +14,13 @@ if ($_SESSION['role'] !== 'admin') {
 
 include 'classes/database.php';
 include 'classes/riwayat_gaji.php';
+include 'classes/audit_log.php';
 
 $db = new Database();
 $koneksi = $db->connect();
 
 $riwayatGaji = new riwayatGaji($koneksi);
+$log = new AuditLog($koneksi);
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -27,7 +29,21 @@ if ($id <= 0) {
     exit;
 }
 
-$riwayatGaji->updateStatus($id, 'paid');
+// Ubah status menjadi paid
+$berhasil = $riwayatGaji->updateStatus($id, 'paid');
 
-header('Location: semua_riwayat.php');
+if ($berhasil) {
+
+    $log->createLog(
+        $_SESSION['user_id'],
+        $id,
+        'Bayar Payroll',
+        'Status payroll diubah menjadi Paid'
+    );
+
+    header('Location: semua_riwayat.php?success=paid');
+    exit;
+}
+
+header('Location: semua_riwayat.php?error=paid');
 exit;

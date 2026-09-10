@@ -117,7 +117,9 @@ include 'layout/header.php';
                       ); ?>
                 </td>
                 <td>
-                  <?php if ($_SESSION['role'] === 'admin'): ?>
+
+                  <?php if ($_SESSION['role'] === 'admin' && $row['status'] === 'pending'): ?>
+
                     <a
                       href="edit_riwayat.php?id=<?= $row['id']; ?>"
                       class="btn btn-warning btn-sm">
@@ -126,9 +128,7 @@ include 'layout/header.php';
                       Edit
 
                     </a>
-                  <?php endif; ?>
 
-                  <?php if ($_SESSION['role'] === 'admin'): ?>
                     <a
                       href="hapus_riwayat.php?id=<?= $row['id']; ?>"
                       class="btn btn-danger btn-sm"
@@ -136,7 +136,21 @@ include 'layout/header.php';
 
                       <i class="bi bi-trash3-fill"></i>
                       Hapus
+
                     </a>
+
+                  <?php elseif ($row['status'] === 'approved'): ?>
+
+                    <span class="text-primary">
+                      <i class="bi bi-check-circle-fill fs-5"></i>
+                    </span>
+
+                  <?php elseif ($row['status'] === 'paid'): ?>
+
+                    <span class="text-success">
+                      <i class="bi bi-check2-circle fs-5"></i>
+                    </span>
+
                   <?php endif; ?>
 
                 </td>

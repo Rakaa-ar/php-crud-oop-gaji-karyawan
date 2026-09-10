@@ -15,11 +15,13 @@ if ($_SESSION['role'] !== 'admin') {
 include 'classes/database.php';
 include 'classes/riwayat_gaji.php';
 include 'classes/karyawan.php';
+include 'classes/audit_log.php';
 
 $db = new Database();
 $koneksi = $db->connect();
 
 $riwayatGaji = new riwayatGaji($koneksi);
+$log = new AuditLog($koneksi);
 $karyawan = new Karyawan($koneksi);
 
 $error = '';
@@ -91,6 +93,18 @@ if (isset($_POST['generate'])) {
     }
 
     $sukses = "Payroll berhasil dibuat: $berhasil karyawan. $dilewati karyawan sudah diproses.";
+
+    if ($berhasil > 0) {
+
+      $log->createLog(
+        $_SESSION['user_id'],
+        null,
+        'Generate Payroll',
+        'Periode: ' . $periodeTanggal .
+          ', berhasil: ' . $berhasil .
+          ' karyawan, dilewati: ' . $dilewati
+      );
+    }
   }
 }
 

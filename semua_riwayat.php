@@ -178,27 +178,52 @@ include 'layout/header.php';
                   </td>
 
                   <td>
+
+                    <a
+                      href="slip_gaji.php?id=<?= $row['id']; ?>"
+                      class="btn btn-primary btn-sm">
+
+                      <i class="bi bi-receipt me-1"></i>
+                      Lihat
+
+                    </a>
+
                     <?php if ($_SESSION['role'] === 'admin' && $row['status'] === 'pending'): ?>
+
+                      <a
+                        href="approve_payroll.php?id=<?= $row['id']; ?>"
+                        class="btn btn-warning btn-sm"
+                        onclick="return confirm('Approve payroll ini?');">
+
+                        <i class="bi bi-check-circle me-1"></i>
+                        Approve
+
+                      </a>
+
+                    <?php elseif ($_SESSION['role'] === 'admin' && $row['status'] === 'approved'): ?>
 
                       <a
                         href="bayar_riwayat.php?id=<?= $row['id']; ?>"
                         class="btn btn-success btn-sm"
                         onclick="return confirm('Tandai payroll ini sebagai sudah dibayar?');">
 
-                        <i class="bi bi-check-circle"></i>
+                        <i class="bi bi-cash-coin me-1"></i>
                         Bayar
 
                       </a>
 
-                    <?php else: ?>
+                    <?php elseif ($row['status'] === 'paid'): ?>
 
-                      <span class="text-muted">-</span>
+                      <span class="text-success ms-1" title="Sudah dibayar">
+                        <i class="bi bi-check2-circle fs-5"></i>
+                      </span>
 
                     <?php endif; ?>
-                    </td>
-                    <?php else: ?>
 
-                    <td>XXXXXXXX</td>
+                  </td>
+                <?php else: ?>
+
+                  <td>XXXXXXXX</td>
                   <td>XXXXXXXX</td>
                   <td>XXXXXXXX</td>
                   <td>XXXXXXXX</td>
