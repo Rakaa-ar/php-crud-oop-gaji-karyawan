@@ -43,6 +43,7 @@ $resultPayroll = $riwayatGaji->getDashboardPayroll($bulan);
 $dataPayroll = mysqli_fetch_assoc($resultPayroll);
 
 $totalPending = $dataPayroll['pending'] ?? 0;
+$totalApproved = $dataPayroll['approved'] ?? 0;
 $totalPaid = $dataPayroll['paid'] ?? 0;
 
 
@@ -139,12 +140,10 @@ include 'layout/header.php';
             <p class="mb-1 text-muted">
               Payroll Pending
             </p>
-
             <h3 class="mb-0">
               <?= $totalPending; ?>
             </h3>
           </div>
-
         </div>
       </div>
     </div>
@@ -166,11 +165,29 @@ include 'layout/header.php';
               <?= $totalPaid; ?>
             </h3>
           </div>
-
         </div>
       </div>
     </div>
   </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-1 me-3"></i>
+
+                <div>
+                    <p class="mb-1 text-muted">
+                        Payroll Approved
+                    </p>
+
+                    <h3 class="mb-0">
+                        <?= $totalApproved; ?>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
   <div class="container mt-4">
     <div class="card shadow-sm border-0">
       <div class="card-body">
